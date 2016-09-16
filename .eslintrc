@@ -1,0 +1,7 @@
+{
+  "extends": "standard",
+  "rules": {
+    "no-multiple-empty-lines": 0,
+    "space-before-function-paren": 0
+  }
+}

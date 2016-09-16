@@ -1,0 +1,33 @@
+{
+  "name": "rem-backend",
+  "version": "0.0.0",
+  "description": "Blog backend built with Express and MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha"
+  },
+  "author": "Ayase-252",
+  "license": "MIT",
+  "dependencies": {
+    "babel-polyfill": "^6.13.0",
+    "bcrypt": "^0.8.7",
+    "mongodb": "^2.2.7",
+    "mongoose": "^4.5.9",
+    "mongoose-auto-increment": "^5.0.1",
+    "oauth2-server": "^2.4.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-core": "^6.14.0",
+    "babel-preset-es2015": "^6.14.0",
+    "eslint": "^3.5.0",
+    "eslint-config-standard": "^6.0.0",
+    "eslint-plugin-promise": "^2.0.1",
+    "eslint-plugin-standard": "^2.0.0",
+    "istanbul": "^1.0.0-alpha",
+    "mocha": "^3.0.2",
+    "mocha-istanbul": "^0.3.0",
+    "mochawesome": "^1.5.1",
+    "should": "^11.1.0"
+  }
+}
