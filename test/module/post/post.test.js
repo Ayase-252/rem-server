@@ -12,11 +12,12 @@ describe('Post', function () {
     })
   })
 
-  describe('#create(title, tags, content, author, featured, callback)', function (done) {
+  describe('#create(title, tags, content, author, featured)', function (done) {
     it('should create a new post in database', function (done) {
       Post.create('Hello world', ['tag1', 'tag2'],
-        'This is the test post', 'testAuthor', false, (error, newPost) => {
-          (error === null).should.be.true()
+        'This is the test post', 'testAuthor', false)
+        .then((newPost) => {
+          // (error === null).should.be.true()
           newPost.id.should.be.equal(0)
           newPost.title.should.be.equal('Hello world')
           newPost.tags.toObject().should.be.eql(['tag1', 'tag2'])
@@ -28,11 +29,11 @@ describe('Post', function () {
     })
   })
 
-  describe('update(newPost, callback)', function (done) {
+  describe('#update(newPost)', function (done) {
     it('should update an existing post with new set', function (done) {
       Post.create('Hello world', ['tag1', 'tag2'],
-        'This is the test post', 'testAuthor', false, (error, newPost) => {
-          (error === null).should.be.true()
+        'This is the test post', 'testAuthor', false)
+        .then((newPost) => {
           const id = newPost.id
           newPost.update({
             title: 'New Post',
@@ -40,8 +41,8 @@ describe('Post', function () {
             content: 'Wow',
             author: 'New Author',
             featured: true
-          }, (error, updatedPost) => {
-            (error === null).should.be.true()
+          })
+          .then((updatedPost) => {
             updatedPost.id.should.be.equal(id)
             updatedPost.title.should.be.equal('New Post')
             updatedPost.tags.toObject().should.be.eql(['newtag1', 'newtag2'])

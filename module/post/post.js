@@ -48,21 +48,15 @@ class Post {
    * @param {String} author     Author (Who will have full of privilege over
    *                                    the post)
    * @param {Boolean} featured  Whether the post is featured
-   * @param {Function} callback Callback function
+   *
+   * @returns {Promise}
+   * @resolves {Post} createdPost
+   * @rejects {Error} error
    */
-  static create(title, tags, content, author, featured, callback) {
+  static create(title, tags, content, author, featured) {
     const post = new Post(title, tags, content, author, featured)
-    post.save(callback)
+    return post.save()
   }
-
-  /**
-   * Callback function handling create
-   *
-   * @callback createCallBack
-   *
-   * @param {Object | null} Error
-   * @param {Post} createdPost
-   */
 
 
   /**
@@ -74,8 +68,10 @@ class Post {
    * @param {String} newPost.content    Content
    * @param {String} newPost.author     Author
    * @param {Boolean} newPostfeatured   Whether the post is featured
-   * @param {Function} callback
    *
+   * @returns {Promise}
+   * @resolves {Post} modifiedPost
+   * @rejects {Error} error
    */
   update({
       title = this.title,
@@ -83,31 +79,31 @@ class Post {
       content = this.content,
       author = this.author,
       featured = this.featured
-    }, callback) {
+    }) {
     this.title = title
     this.tags = tags
     this.content = content
     this.author = author
     this.featured = featured
-    return this._modify(callback)
+    return this._modify()
   }
-    /**
-     * Callback function handling update
-     *
-     * @callback updateCallBack
-     *
-     * @param {Object | null} Error
-     * @param {Post} updatedPost
-     */
 
   /**
    * remove - Remove the post from database
    *
-   * @returns {Boolean} result Result True for success, false for failure
+   * @param {Function} callback
    */
-  remove() {
-    return this._remove()
+  remove(callback) {
+    return this._remove(callback)
   }
+    /**
+     * Callback function handling remove
+     *
+     * @callback removeCallBack
+     *
+     * @param
+     */
+
 
   /**
    * getPostById - Get post by ID
@@ -130,10 +126,11 @@ class Post {
   /**
    * save - Save the post
    *
-   * @param {Function} callback
-   *
+   * @returns {Promise}
+   * @resolves {Post} savedPost
+   * @rejects {Error} error
    */
-  save(callback) {
+  save() {
     const post = new PostModel({
       title: this.title,
       tags: this.tags,
@@ -141,27 +138,18 @@ class Post {
       author: this.author,
       featured: this.featured
     })
-    post.save((error, result) => {
-      if (error) {
-        console.log('Error occurred during saving ' + error)
-        if (typeof callback === 'function') {
-          callback(error)
+
+    return new Promise((resolve, reject) => {
+      post.save((error, result) => {
+        if (error) {
+          console.log('Error occurred during saving' + error)
+          reject(error)
+        } else {
+          resolve(Post._convertPostModelToPost(result))
         }
-        return
-      }
-      if (typeof callback === 'function') {
-        callback(null, Post._convertPostModelToPost(result))
-      }
+      })
     })
   }
-  /**
-   * Callback function handling save
-   *
-   * @callback saveCallBack
-   *
-   * @param {Object | null} Error
-   * @param {Post} savedPost
-   */
 
   /**
    * _modify - Modify an existing post by revised Post
@@ -169,40 +157,36 @@ class Post {
    * @private
    * @desc This function will query database by id property in caller.
    *
-   * @param {Function} callback
+   * @returns {Promise}
+   * @resolves {Post} modifiedPost
+   * @rejects {Error} error
    * @throws AssertionError  If id is ''
    */
-  _modify(callback) {
+  _modify() {
     assert.notStrictEqual(this.id, '', 'id property is undefined.')
-    PostModel.findOneAndUpdate({ _id: this.id }, {
-      title: this.title,
-      tags: this.tags,
-      content: this.content,
-      author: this.author,
-      featured: this.featured
-    }, { new: true }, (error, result) => {
-      if (error) {
-        console.log('Error occurred during modification ' + error)
-        if (typeof callback === 'function') {
-          callback(error)
+    return new Promise((resolve, reject) => {
+      PostModel.findOneAndUpdate(
+        {
+          _id: this.id
+        }, {
+          title: this.title,
+          tags: this.tags,
+          content: this.content,
+          author: this.author,
+          featured: this.featured
+        }, {
+          new: true
+        }, (error, result) => {
+          if (error) {
+            console.log('Error occurred during modification ' + error)
+            reject(error)
+          } else {
+            resolve(Post._convertPostModelToPost(result))
+          }
         }
-        return
-      }
-      if (typeof callback === 'function') {
-        callback(null, Post._convertPostModelToPost(result))
-      }
+      )
     })
   }
-
-  /**
-   * Callback function handling _modify
-   *
-   * @callback modifyCallBack
-   *
-   * @param {Object | null} Error
-   * @param {Post} modifiedPost
-   */
-
 
   /**
    * _remove - Remove caller from database
