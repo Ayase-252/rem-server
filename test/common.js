@@ -1,5 +1,7 @@
-const should = require('should')
-const assert = require('assert')
+// const should = require('should')
+// const assert = require('assert')
+import * as should from 'should'
+import * as assert from 'assert'
 import { connect } from '../app'
 
 const url = 'mongodb://localhost:27017/rem-test'
@@ -25,5 +27,6 @@ const removeAllDocument = function (model, done) {
   })
 }
 
+export { should, removeAllDocument }
 exports.should = should
 exports.removeAllDocument = removeAllDocument

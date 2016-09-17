@@ -1,14 +1,17 @@
 /**
- *  Wrapped the operation on post up
+ * Wrapped the operation on post up
  *
- *  @author       Ayase-252 (bitdqy@hotmail.com)
+ * @author       Ayase-252 (bitdqy@hotmail.com)
  *
- *  @requires     assert
- *  @requires     /model/post
+ * @requires     assert
+ * @requires     /model/post
+ * @requires     /module/error/not_found_error
  */
 
-import { PostModel } from '../../model/post'
 import * as assert from 'assert'
+import { PostModel } from '../../model/post'
+import { NotFoundError } from '../error/not_found_error'
+
 
 /**
  * Post - Representing a post
@@ -74,12 +77,12 @@ class Post {
    * @rejects {Error} error
    */
   update({
-      title = this.title,
-      tags = this.tags,
-      content = this.content,
-      author = this.author,
-      featured = this.featured
-    }) {
+    title = this.title,
+    tags = this.tags,
+    content = this.content,
+    author = this.author,
+    featured = this.featured
+  }) {
     this.title = title
     this.tags = tags
     this.content = content
@@ -91,19 +94,13 @@ class Post {
   /**
    * remove - Remove the post from database
    *
-   * @param {Function} callback
+   * @returns{Promise}
+   * @resolves {Post} removedPost
+   * @reject {Error} error
    */
-  remove(callback) {
-    return this._remove(callback)
+  remove() {
+    return this._remove()
   }
-    /**
-     * Callback function handling remove
-     *
-     * @callback removeCallBack
-     *
-     * @param
-     */
-
 
   /**
    * getPostById - Get post by ID
@@ -111,15 +108,23 @@ class Post {
    * @static @public
    * @param {String} id id of post
    *
-   * @returns {Post} post Instance of result, null if post cannot be fetched
+   * @returns {Promise}
+   * @resolves {Post} post Instance of result, null if post cannot be fetched
+   * @rejects {Error} error
    */
   static getPostById(id) {
-    PostModel.findById(id, (error, result) => {
-      if (error) {
-        console.log('Error occurred during query ' + error)
-        return null
-      }
-      return Post._convertPostModelToPost(result)
+    return new Promise((resolve, reject) => {
+      PostModel.findById(id, (error, result) => {
+        if (error) {
+          console.log('Error occurred during query ' + error)
+          reject(error)
+        } else if (result === null) {
+          const newNotFoundError = new NotFoundError('Post', 'id', id)
+          reject(newNotFoundError)
+        } else {
+          resolve(Post._convertPostModelToPost(result))
+        }
+      })
     })
   }
 
@@ -165,26 +170,24 @@ class Post {
   _modify() {
     assert.notStrictEqual(this.id, '', 'id property is undefined.')
     return new Promise((resolve, reject) => {
-      PostModel.findOneAndUpdate(
-        {
-          _id: this.id
-        }, {
-          title: this.title,
-          tags: this.tags,
-          content: this.content,
-          author: this.author,
-          featured: this.featured
-        }, {
-          new: true
-        }, (error, result) => {
-          if (error) {
-            console.log('Error occurred during modification ' + error)
-            reject(error)
-          } else {
-            resolve(Post._convertPostModelToPost(result))
-          }
+      PostModel.findOneAndUpdate({
+        _id: this.id
+      }, {
+        title: this.title,
+        tags: this.tags,
+        content: this.content,
+        author: this.author,
+        featured: this.featured
+      }, {
+        new: true
+      }, (error, result) => {
+        if (error) {
+          console.log('Error occurred during modification ' + error)
+          reject(error)
+        } else {
+          resolve(Post._convertPostModelToPost(result))
         }
-      )
+      })
     })
   }
 
@@ -193,17 +196,22 @@ class Post {
    *
    * @private
    *
-   * @returns {Boolean} result True for success, false for failure
+   * @returns {Promise}
+   * @resolves {Post} removedPost
+   * @reject {Error} error
    * @throws AssertionError  If id is ''
    */
   _remove() {
     assert.notStrictEqual(this.id, '', 'id property is undefined.')
-    PostModel.findOneAndRemove({ _id: this.id }, (error) => {
-      if (error) {
-        console.log('Error occurred during removing' + error)
-        return false
-      }
-      return true
+    return new Promise((resolve, reject) => {
+      PostModel.findByIdAndRemove(this.id, (error, product) => {
+        if (error) {
+          console.log('Error occurred during removing' + error)
+          reject(error)
+        } else {
+          resolve(Post._convertPostModelToPost(product))
+        }
+      })
     })
   }
 
