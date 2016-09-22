@@ -9,7 +9,6 @@
  */
 
 import * as assert from 'assert'
-// import { PostModel } from '../../model/post'
 import { PostModel } from './post.model'
 import { NotFoundError } from '../error/not_found_error'
 
@@ -26,15 +25,17 @@ class Post {
    *
    * @param {String} title      Title
    * @param {Array} tags        Tags
+   * @param {String} category   Category
    * @param {String} content    Content
    * @param {String} author     Author (Who will have full of privilege over
    *                                    the post)
    * @param {Boolean} featured  Whether the post is featured
    * @param {String} id         Id
    */
-  constructor(title, tags, content, author, featured, id = '') {
+  constructor(title, tags, category, content, author, featured, id = '') {
     this.title = title
     this.tags = tags
+    this.category = category
     this.content = content
     this.author = author
     this.featured = featured
@@ -57,8 +58,8 @@ class Post {
    * @resolves {Post} createdPost
    * @rejects {Error} error
    */
-  static create(title, tags, content, author, featured) {
-    const post = new Post(title, tags, content, author, featured)
+  static create(title, tags, category, content, author, featured) {
+    const post = new Post(title, tags, category, content, author, featured)
     return post.save()
   }
 
@@ -80,6 +81,7 @@ class Post {
   update({
     title = this.title,
     tags = this.tags,
+    category = this.category,
     content = this.content,
     author = this.author,
     featured = this.featured
@@ -87,6 +89,7 @@ class Post {
     this.title = title
     this.tags = tags
     this.content = content
+    this.category = category
     this.author = author
     this.featured = featured
     return this._modify()
@@ -95,7 +98,7 @@ class Post {
   /**
    * remove - Remove the post from database
    *
-   * @returns{Promise}
+   * @returns {Promise}
    * @resolves {Post} removedPost
    * @reject {Error} error
    */
@@ -141,6 +144,7 @@ class Post {
       title: this.title,
       tags: this.tags,
       content: this.content,
+      category: this.category,
       author: this.author,
       featured: this.featured
     })
@@ -177,6 +181,7 @@ class Post {
         title: this.title,
         tags: this.tags,
         content: this.content,
+        category: this.category,
         author: this.author,
         featured: this.featured
       }, {
@@ -230,10 +235,11 @@ class Post {
       title,
       tags,
       content,
+      category,
       author,
       featured
     } = postModel
-    return new Post(title, tags, content, author, featured, id)
+    return new Post(title, tags, category, content, author, featured, id)
   }
 }
 

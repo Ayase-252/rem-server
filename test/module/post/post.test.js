@@ -12,13 +12,14 @@ describe('Post', function () {
     })
   })
 
-  describe('#create(title, tags, content, author, featured)', function (done) {
+  describe('#create(title, tags, category, content, author, featured)', function (done) {
     it('should create a new post in database', function (done) {
-      Post.create('Hello world', ['tag1', 'tag2'],
+      Post.create('Hello world', ['tag1', 'tag2'], 'category1',
           'This is the test post', 'testAuthor', false)
         .then((newPost) => {
           newPost.id.should.be.equal(0)
           newPost.title.should.be.equal('Hello world')
+          newPost.category.should.be.equal('category1')
           newPost.tags.toObject().should.be.eql(['tag1', 'tag2'])
           newPost.content.should.be.equal('This is the test post')
           newPost.author.should.be.equal('testAuthor')
@@ -30,12 +31,13 @@ describe('Post', function () {
 
   describe('.update(newPost)', function (done) {
     it('should update an existing post with new set', function (done) {
-      Post.create('Hello world', ['tag1', 'tag2'],
+      Post.create('Hello world', ['tag1', 'tag2'], 'category1',
           'This is the test post', 'testAuthor', false)
         .then((newPost) => {
           return newPost.update({
             title: 'New Post',
             tags: ['newtag1', 'newtag2'],
+            category: 'newCategory',
             content: 'Wow',
             author: 'New Author',
             featured: true
@@ -44,6 +46,7 @@ describe('Post', function () {
         .then((updatedPost) => {
           updatedPost.title.should.be.equal('New Post')
           updatedPost.tags.toObject().should.be.eql(['newtag1', 'newtag2'])
+          updatedPost.category.should.be.equal('newCategory')
           updatedPost.content.should.be.equal('Wow')
           updatedPost.author.should.be.equal('New Author')
           updatedPost.featured.should.be.true()
@@ -54,7 +57,7 @@ describe('Post', function () {
 
   describe('.remove()', function (done) {
     it('should remove the caller from the database', function (done) {
-      Post.create('Hello world', ['tag1', 'tag2'],
+      Post.create('Hello world', ['tag1', 'tag2'], 'category',
           'This is the test post', 'testAuthor', false)
         .then((newPost) => {
           return newPost.remove()
@@ -71,7 +74,7 @@ describe('Post', function () {
 
   describe('#getPostById(id)', function (done) {
     it('should return a Post object if post exists', function (done) {
-      Post.create('Hello world', ['tag1', 'tag2'],
+      Post.create('Hello world', ['tag1', 'tag2'], 'category',
           'This is the test post', 'testAuthor', false)
         .then(() => {
           return Post.getPostById(0)
@@ -80,6 +83,7 @@ describe('Post', function () {
           post.id.should.be.equal(0)
           post.title.should.be.equal('Hello world')
           post.tags.toObject().should.be.eql(['tag1', 'tag2'])
+          post.category.should.be.equal('category')
           post.content.should.be.equal('This is the test post')
           post.author.should.be.equal('testAuthor')
           post.featured.should.be.false()
