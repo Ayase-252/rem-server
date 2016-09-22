@@ -3,10 +3,13 @@
 import * as should from 'should'
 import * as assert from 'assert'
 import { connect } from '../app'
+import { Connection } from '../common'
 
 const url = 'mongodb://localhost:27017/rem-test'
 
 connect(url)
+
+Connection.setConnection(url)
 
 const removeAllDocument = function (model, done) {
   model.find({}, function (error, docs) {
@@ -28,5 +31,3 @@ const removeAllDocument = function (model, done) {
 }
 
 export { should, removeAllDocument }
-exports.should = should
-exports.removeAllDocument = removeAllDocument

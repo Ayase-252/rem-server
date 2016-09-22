@@ -4,8 +4,16 @@ import mongoose from 'mongoose'
 
 let connection = null
 
-let connect = function (url = 'mongodb://localhost:27017/rem-backend') {
+/**
+ *
+ * @deprecated
+ */
+const connect = function (url = 'mongodb://localhost:27017/rem-backend') {
   connection = mongoose.createConnection(url)
 }
 
-export { connection, connect }
+const makeConnection = function (url = 'mongodb://localhost:27017/rem-backend') {
+  const connection = mongoose.createConnection(url)
+  return connection
+}
+export { connection, connect, makeConnection }

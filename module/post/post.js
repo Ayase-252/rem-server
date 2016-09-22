@@ -9,7 +9,8 @@
  */
 
 import * as assert from 'assert'
-import { PostModel } from '../../model/post'
+// import { PostModel } from '../../model/post'
+import { PostModel } from './post.model'
 import { NotFoundError } from '../error/not_found_error'
 
 
