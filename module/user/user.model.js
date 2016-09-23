@@ -1,33 +1,51 @@
-import { Schema, connection } from './common'
+/**
+ * Model of User
+ *
+ *
+ * @author    Ayase-252(bitdqy@hotmail.com)
+ *
+ * @requires  bcrypt
+ * @requires  /common
+ */
+
 import bcrypt from 'bcrypt'
+import { Schema, Connection } from '../../common'
 
 const SALT_WORK_FACTOR = 10
 
 const userSchema = new Schema({
+  // Login Credential
   username: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
+
+  // User information
   group: String,
+  secureEmail: { type: String, required: true },
+  contactEmail: String,
   firstName: String,
-  lastName: String,
-  email: String
+  lastName: String
 })
+
+/**
+ * Hook of save method to encrypt user password
+ *
+ * Only document method save() is hooked.
+ */
 
 userSchema.pre('save', function (next) {
   const user = this
+    // Nothing is modified
   if (!user.isModified('password')) {
     next()
   }
-  bcrypt.genSalt(SALT_WORK_FACTOR, (error, salt) => {
+
+  bcrypt.hash(user.password, SALT_WORK_FACTOR, (error, hash) => {
     if (error) {
-      return next(error)
-    }
-    bcrypt.hash(user.password, salt, (error, hash) => {
-      if (error) {
-        return next(error)
-      }
+      next(error)
+    } else {
       user.password = hash
       next()
-    })
+    }
   })
 })
 
@@ -39,14 +57,15 @@ userSchema.pre('save', function (next) {
  *
  */
 userSchema.methods.comparePassword = function (candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (error, isMatch) => {
+  const user = this
+  bcrypt.compare(candidatePassword, user.password, (error, isMatch) => {
     if (error) {
-      return callback(error)
+      callback(error)
     }
     callback(null, isMatch)
   })
 }
 
-const User = connection.model('User', userSchema)
+const UserModel = Connection.getConnection().model('User', userSchema)
 
-export { User }
+export { UserModel }

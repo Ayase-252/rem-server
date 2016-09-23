@@ -9,9 +9,10 @@
 import { AbstractError } from './abstract_error'
 
 /**
- * NotFoundError - Not found error
+ * Not found error
  *
  * @class
+ * @extends AbstractError
  *
  * @desc This error indicates that the document you want to find does not in
  *       database.

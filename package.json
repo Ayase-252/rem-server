@@ -4,7 +4,8 @@
   "description": "Blog backend built with Express and MongoDB",
   "main": "app.js",
   "scripts": {
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha"
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha",
+    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "author": "Ayase-252",
   "license": "MIT",
@@ -25,6 +26,8 @@
     "eslint-plugin-promise": "^2.0.1",
     "eslint-plugin-standard": "^2.0.0",
     "istanbul": "^1.0.0-alpha",
+    "jsdoc": "^3.4.1",
+    "minami": "^1.1.1",
     "mocha": "^3.0.2",
     "mocha-istanbul": "^0.3.0",
     "mochawesome": "^1.5.1",
