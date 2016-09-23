@@ -72,7 +72,7 @@ class Post {
    * @param {Array} newPost.tags        Tags
    * @param {String} newPost.content    Content
    * @param {String} newPost.author     Author
-   * @param {Boolean} newPostfeatured   Whether the post is featured
+   * @param {Boolean} newPost.featured   Whether the post is featured
    *
    * @returns {Promise}
    * @resolves {Post} modifiedPost
@@ -170,7 +170,7 @@ class Post {
    * @returns {Promise}
    * @resolves {Post} modifiedPost
    * @rejects {Error} error
-   * @throws AssertionError  If id is ''
+   * @throws {AssertionError} If id is empty string('').
    */
   _modify() {
     assert.notStrictEqual(this.id, '', 'id property is undefined.')
@@ -205,7 +205,7 @@ class Post {
    * @returns {Promise}
    * @resolves {Post} removedPost
    * @reject {Error} error
-   * @throws AssertionError  If id is ''
+   * @throws {AssertionError} If id is empty string('')
    */
   _remove() {
     assert.notStrictEqual(this.id, '', 'id property is undefined.')
@@ -224,7 +224,8 @@ class Post {
   /**
    * Convert raw PostModel to Post.
    *
-   * @static @private
+   * @static
+   * @private
    * @param {PostModel} postModel Raw PostModel
    *
    * @returns {Post} post Post whose data are equivalent to PostModel

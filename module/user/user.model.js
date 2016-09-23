@@ -23,7 +23,10 @@ const userSchema = new Schema({
   secureEmail: { type: String, required: true },
   contactEmail: String,
   firstName: String,
-  lastName: String
+  lastName: String,
+
+  // Status control
+  isValid: { type: Boolean, default: true }
 })
 
 /**

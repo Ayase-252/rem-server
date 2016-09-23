@@ -58,7 +58,7 @@ describe('/module/user UserModel', function () {
       })
     })
 
-    it('shoure callback with not matched when compare with wrong information', function (done) {
+    it('should callback with not matched when compare with wrong information', function (done) {
       user.comparePassword('password12', (error, isMatch) => {
         (error === null).should.be.true
         isMatch.should.be.false
