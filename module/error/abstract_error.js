@@ -6,30 +6,30 @@
  */
 
 /**
- * AbstractError - Abstract base class for all errors
+ * Abstract base class for all errors.
  *
  * @class
  */
 class AbstractError {
 
   /**
-   * constructor - Create a Abstract Error
+   * Create a Abstract Error
    *
    * @param {String} name     Name of errors
    * @param {String} message  Message describing the error
    */
-  constructor(name = 'Anstract Error', message = '') {
+  constructor(name = 'Abstract Error', message = '') {
     this.name = name
     this.message = message
   }
 
   /**
-   * toString - Return error represented in string
+   * Return error represented in string
    *
    * @returns {String} errorString
    */
   toString() {
-    return 'Error ' + this.name + ': ' + this.message
+    return '[Error] ' + this.name + ': ' + this.message
   }
 }
 

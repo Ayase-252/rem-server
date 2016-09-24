@@ -1,7 +1,7 @@
 import { removeAllDocument } from '../../common'
 import { UserModel as User } from '../../../module/user/user.model'
 
-describe('/module/user UserModel', function () {
+describe('/module/user/user.model.js UserModel', function () {
   beforeEach('clear database', function (done) {
     removeAllDocument(User, done)
   })

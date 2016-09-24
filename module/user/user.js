@@ -8,10 +8,12 @@
  *
  * @requires  assert
  * @requires  /module/user/user.model
+ * @requires  /module/error/validation_error
  */
 
 import assert from 'assert'
 import { UserModel } from './user.model'
+import { ValidationError } from '../error/validation_error'
 
 
 const MIN_PASSWORD_LENGTH = 7
@@ -28,15 +30,15 @@ class User {
    *
    * @constructor
    *
-   * @param {String} username                 Username
+   * @param {String} userId                   User ID
    * @param {Object} userInfo                 An object about user information such as name
    * @param {String} userInfo.firstName       First name of user
    * @param {String} userInfo.lastName        Last name of user
    * @param {String} userInfo.contactEmail    Email address to contect user
    *
    */
-  constructor(username, userInfo) {
-
+  constructor(userId, userInfo) {
+    Object.assign(this, { userId, userInfo })
   }
 
   /**
@@ -73,7 +75,7 @@ class User {
    */
   static _validateEmail(email) {
     assert.strictEqual(typeof email, 'string')
-    //
+    return /^\w+@\w+\.\w+$/g.test(email)
   }
 
   /**
@@ -90,11 +92,50 @@ class User {
    * @param {String} userInfo.contactEmail    Email address to contect user
    *
    * @returns   {Promise}
-   * @resolves  {}
-   * @rejects   {}
+   * @resolves  {User}
+   * @rejects   {ValidationError} If any validation rule is violated,
+   *                              ValidationError will be thrown.
    */
-  static regist(username, password, secureEmail, userInfo) {
+  static register(username, password, secureEmail, userInfo) {
+    // Validate all field
+    return new Promise(function (resolve, reject) {
+      if (!User._validatePassword(password)) {
+        reject(new ValidationError('password', password, 'Password does not ' +
+          'comply with current policy.'))
+        return
+      }
+      if (!User._validateEmail(secureEmail)) {
+        reject(new ValidationError('secureEmail', secureEmail, 'Address is not ' +
+          'formatted in correct format.'))
+        return
+      }
 
+      const { firstName, lastName, contactEmail } = userInfo
+      const user = new UserModel({
+        username,
+        password,
+        secureEmail,
+        firstName,
+        lastName,
+        contactEmail
+      })
+
+      user.save((error, doc) => {
+        if (error) {
+          reject(error)
+        } else {
+          const userId = doc._id
+          const { firstName, lastName, contactEmail } = doc
+          const userInfo = {
+            firstName,
+            lastName,
+            contactEmail
+          }
+          const newUser = new User(userId, userInfo)
+          resolve(newUser)
+        }
+      })
+    })
   }
 
   static authenticate() {
