@@ -41,7 +41,8 @@ class User {
 
   /**
    * Validate whether password follows given rules.
-   * The rule is TODO.
+   * The rules:
+   * (1) The length of password must be equal or more than MIN_PASSWORD_LENGTH.
    *
    * @static
    * @private
@@ -59,13 +60,40 @@ class User {
   }
 
   /**
+   * Validate whether email is a valid email address.
+   *
+   * @static
+   * @private
+   *
+   * @param {String}    email       Email address
+   *
+   * @returns {Boolean}             True if email address is valid. False if not
+   * @throws {AssertionError}       If email is not a string, AssertionError will
+   *                                be thrown.
+   */
+  static _validateEmail(email) {
+    assert.strictEqual(typeof email, 'string')
+    //
+  }
+
+  /**
    * Register new user.
+   *
+   * @param {String} username                 Username
+   * @param {String} password                 Password
+   * @param {String} secureEmail              Email address to receive mail
+   *                                          about account secure service
+   * @param {Object} userInfo                 An object about user information
+   *                                          such as name
+   * @param {String} userInfo.firstName       First name of user
+   * @param {String} userInfo.lastName        Last name of user
+   * @param {String} userInfo.contactEmail    Email address to contect user
    *
    * @returns   {Promise}
    * @resolves  {}
    * @rejects   {}
    */
-  static regist() {
+  static regist(username, password, secureEmail, userInfo) {
 
   }
 
