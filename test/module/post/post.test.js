@@ -1,6 +1,6 @@
 import { removeAllDocument } from '../../common'
 import { Post } from '../../../module/post/post'
-import { PostModel } from '../../../model/post'
+import { PostModel } from '../../../module/post/post.model'
 
 describe('Post', function () {
   beforeEach('remove all documents in database', function (done) {

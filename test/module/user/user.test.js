@@ -58,7 +58,7 @@ describe('/module/user/user.js User', function () {
     )
   })
 
-  describe('#.regist(username, password, secureEmail, userInfo)', function() {
+  describe('#.register(username, password, secureEmail, userInfo)', function() {
     it('should reject attempt with password which is too short', function(done) {
       User.register('whatever', 'srtpwd', 'validEmail@xxx.com', {
         firstName: 'hw',
@@ -108,7 +108,7 @@ describe('/module/user/user.js User', function () {
       })
     })
 
-    it('should not regist for users whose username is same', function(done) {
+    it('should not register for users whose username is same', function(done) {
       User.register('whatever', 'hsixunfsw', 'validEmail@xxx.com', {
         firstName: 'hw',
         lastName: 'xo',

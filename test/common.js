@@ -2,12 +2,10 @@
 // const assert = require('assert')
 import * as should from 'should'
 import * as assert from 'assert'
-import { connect } from '../app'
 import { Connection } from '../common'
 
 const url = 'mongodb://localhost:27017/rem-test'
 
-connect(url)
 
 Connection.setConnection(url)
 

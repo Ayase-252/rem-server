@@ -5,13 +5,12 @@
  *
  * @requires  mongoose
  * @requires  assert
- * @requires  /app
+ * @requires  /router/app
  */
 
 
 import mongoose from 'mongoose'
 import assert from 'assert'
-import { makeConnection } from './app'
 
 /**
  * Connection - Wrap class of connection
@@ -50,4 +49,4 @@ class Connection {
 
 const Schema = mongoose.Schema
 
-export { Schema, makeConnection, Connection }
+export { Schema, Connection }
